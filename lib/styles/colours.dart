@@ -1,9 +1,11 @@
 import 'package:flutter/painting.dart';
 
 class Colours {
-  static final background = Color(0xffFCFCFD);
-  static final backgroundHighlight = Color(0xffffffff);
-  static final primary = Color(0xff666666);
-  static final secondary = Color(0xff999999);
-  static final tertiary = Color(0xffcccccc);
+  static final white = Color(0xffFFFFFF);
+  static final lightestGrey = Color(0xfff7f9ff);
+  static final lightGrey = Color(0xffb4bfdb);
+  static final grey = Color(0xff9099b0);
+  static final darkGrey = Color(0xff404656);
+
+  static final primary = Color(0xff1c2742);
 }
