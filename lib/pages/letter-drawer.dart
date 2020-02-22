@@ -5,11 +5,13 @@ import 'package:inksy/styles/colours.dart';
 class LetterDrawer extends CustomPainter {
   final List<Offset> points;
   final String currentLetter;
-  final Offset bottomLeft;
-  final Offset topRight;
+  final Map<String, List<Offset>> limits;
 
-  LetterDrawer(
-      {this.points, this.bottomLeft, this.topRight, this.currentLetter});
+  LetterDrawer({
+    this.points,
+    this.limits,
+    this.currentLetter,
+  });
 
   @override
   bool shouldRepaint(LetterDrawer oldDelegate) {
@@ -23,21 +25,27 @@ class LetterDrawer extends CustomPainter {
       ..strokeWidth = 15.0;
 
     Paint boundaryLine = Paint()
-      ..color = Colours.background
+      ..color = Colours.lightGrey
       ..strokeCap = StrokeCap.square
       ..strokeWidth = 2.5;
 
-    if (bottomLeft != null && topRight != null) {
-      canvas.drawLine(
-        Offset(bottomLeft.dx, topRight.dy),
-        Offset(topRight.dx, topRight.dy),
-        boundaryLine,
-      );
-      canvas.drawLine(
-        Offset(bottomLeft.dx, bottomLeft.dy),
-        Offset(topRight.dx, bottomLeft.dy),
-        boundaryLine,
-      );
+    if (limits != null) {
+      limits.forEach((key, value) {
+        if (value.isNotEmpty && value[0] != null && value[1] != null) {
+          Offset bottomLeft = value[0];
+          Offset topRight = value[1];
+          canvas.drawLine(
+            Offset(bottomLeft.dx, topRight.dy),
+            Offset(topRight.dx, topRight.dy),
+            boundaryLine,
+          );
+          canvas.drawLine(
+            Offset(bottomLeft.dx, bottomLeft.dy),
+            Offset(topRight.dx, bottomLeft.dy),
+            boundaryLine,
+          );
+        }
+      });
     }
 
     for (int i = 0; i < points.length - 1; i++) {

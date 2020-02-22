@@ -16,10 +16,13 @@ class CreateFontState extends State<CreateFont> with TickerProviderStateMixin {
     key: (item) => item,
     value: (item) => <Offset>[],
   );
+  Map<String, List<Offset>> limits = Map.fromIterable(
+    Alphabet.letters,
+    key: (item) => item,
+    value: (item) => <Offset>[],
+  );
   Set<String> visitedLetters = Set.of([Alphabet.letters.first]);
   String currentLetter = Alphabet.letters.first;
-  Offset bottomLeft;
-  Offset topRight;
 
   bool isWithinBox(Offset drawPoint) {
     return drawPoint.dx > 0 &&
@@ -29,45 +32,31 @@ class CreateFontState extends State<CreateFont> with TickerProviderStateMixin {
   }
 
   void updateMinMaxYValues(Offset newPoint) {
-    if (bottomLeft == null && topRight == null) {
-      bottomLeft = newPoint;
-      topRight = newPoint;
+    if (limits[currentLetter].isEmpty) {
+      limits[currentLetter].add(newPoint);
+      limits[currentLetter].add(newPoint);
     } else {
-      if (newPoint.dy > topRight.dy) {
-        topRight = Offset(topRight.dx, newPoint.dy);
+      if (newPoint.dy > limits[currentLetter][1].dy) {
+        limits[currentLetter][1] =
+            Offset(limits[currentLetter][1].dx, newPoint.dy);
       }
-      if (newPoint.dx > topRight.dx) {
-        topRight = Offset(newPoint.dx, topRight.dy);
+      if (newPoint.dx > limits[currentLetter][1].dx) {
+        limits[currentLetter][1] =
+            Offset(newPoint.dx, limits[currentLetter][1].dy);
       }
-      if (newPoint.dx < bottomLeft.dx) {
-        bottomLeft = Offset(newPoint.dx, bottomLeft.dy);
+      if (newPoint.dx < limits[currentLetter][0].dx) {
+        limits[currentLetter][0] =
+            Offset(newPoint.dx, limits[currentLetter][0].dy);
       }
-      if (newPoint.dy < bottomLeft.dy) {
-        bottomLeft = Offset(bottomLeft.dx, newPoint.dy);
+      if (newPoint.dy < limits[currentLetter][0].dy) {
+        limits[currentLetter][0] =
+            Offset(limits[currentLetter][0].dx, newPoint.dy);
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final Container sketchArea = Container(
-      alignment: Alignment.topLeft,
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.width * 1.1,
-      decoration: BoxDecoration(
-        color: Colours.backgroundHighlight,
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: CustomPaint(
-        painter: LetterDrawer(
-          bottomLeft: bottomLeft,
-          topRight: topRight,
-          points: letters[currentLetter],
-          currentLetter: currentLetter,
-        ),
-      ),
-    );
-
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
@@ -76,43 +65,53 @@ class CreateFontState extends State<CreateFont> with TickerProviderStateMixin {
           PageTitle("Create Font"),
           Container(
             margin: EdgeInsets.all(20.0),
-            child: Column(
-              children: [
-                GestureDetector(
-                  onPanUpdate: (DragUpdateDetails details) {
-                    if (isWithinBox(details.localPosition)) {
-                      setState(() {
-                        updateMinMaxYValues(details.localPosition);
-                        letters.update(
-                          currentLetter,
-                          (points) =>
-                              List.from(points)..add(details.localPosition),
-                        );
-                      });
-                    }
-                  },
-                  onPanStart: (DragStartDetails details) {
-                    if (isWithinBox(details.localPosition)) {
-                      setState(() {
-                        updateMinMaxYValues(details.localPosition);
-                        visitedLetters.add(currentLetter);
-                        letters.update(
-                          currentLetter,
-                          (points) =>
-                              List.from(points)..add(details.localPosition),
-                        );
-                      });
-                    }
-                  },
-                  onPanEnd: (DragEndDetails details) {
+            child: GestureDetector(
+              onPanUpdate: (DragUpdateDetails details) {
+                if (isWithinBox(details.localPosition)) {
+                  setState(() {
+                    updateMinMaxYValues(details.localPosition);
                     letters.update(
                       currentLetter,
-                      (points) => List.from(points)..add(null),
+                      (points) => List.from(points)..add(details.localPosition),
                     );
-                  },
-                  child: sketchArea,
+                  });
+                }
+              },
+              onPanStart: (DragStartDetails details) {
+                if (isWithinBox(details.localPosition)) {
+                  setState(() {
+                    updateMinMaxYValues(details.localPosition);
+                    letters.update(
+                      currentLetter,
+                      (points) => List.from(points)..add(details.localPosition),
+                    );
+                  });
+                }
+              },
+              onPanEnd: (DragEndDetails details) {
+                setState(() {
+                  visitedLetters.add(currentLetter);
+                  letters.update(
+                    currentLetter,
+                    (points) => List.from(points)..add(null),
+                  );
+                });
+              },
+              child: Container(
+                alignment: Alignment.topLeft,
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.width * 1.05,
+                decoration: BoxDecoration(
+                  color: Colours.lightestGrey,
                 ),
-              ],
+                child: CustomPaint(
+                  painter: LetterDrawer(
+                    limits: limits,
+                    points: letters[currentLetter],
+                    currentLetter: currentLetter,
+                  ),
+                ),
+              ),
             ),
           ),
           SingleChildScrollView(

@@ -25,22 +25,22 @@ class _MainContentState extends State {
   Widget build(context) {
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: Colours.background,
+        backgroundColor: Colours.white,
         extendBody: true,
         body: Container(
           child: SafeArea(
               left: true, right: true, top: true, bottom: false, child: _child),
-          decoration: BoxDecoration(color: Colours.background),
+          decoration: BoxDecoration(color: Colours.white),
         ),
         bottomNavigationBar: FooterNavigator(
           height: 55.0,
           color: Colours.primary,
           buttonBackgroundColor: Colours.primary,
-          backgroundColor: Colours.background,
+          backgroundColor: Colours.white,
           items: <Widget>[
-            Icon(Icons.home, size: 30, color: Colours.backgroundHighlight),
-            Icon(Icons.search, size: 30, color: Colours.backgroundHighlight),
-            Icon(Icons.edit, size: 30, color: Colours.backgroundHighlight),
+            Icon(Icons.home, size: 30, color: Colours.lightestGrey),
+            Icon(Icons.search, size: 30, color: Colours.lightestGrey),
+            Icon(Icons.edit, size: 30, color: Colours.lightestGrey),
           ],
           onTap: (index) {
             _handleNavigationChange(index);

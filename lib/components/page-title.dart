@@ -9,14 +9,13 @@ class PageTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(20.0),
+      padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),
       width: MediaQuery.of(context).size.width,
       child: Text(
         titleText,
         textAlign: TextAlign.left,
         style: TextStyle(
           fontSize: 25.0,
-          fontWeight: FontWeight.w200,
           color: Colours.primary,
         ),
       ),

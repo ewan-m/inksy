@@ -22,9 +22,11 @@ class LetterButtonState extends State<LetterButton> {
       width: widget.current ? 100.0 : 50.0,
       height: widget.current ? 100.0 : 70.0,
       margin: EdgeInsets.symmetric(
-          horizontal: 5.0, vertical: widget.current ? 0.0 : 15.0),
+        horizontal: 5.0,
+        vertical: widget.current ? 0.0 : 15.0,
+      ),
       decoration: BoxDecoration(
-        color: Colours.backgroundHighlight,
+        color: Colours.darkGrey,
         borderRadius: widget.current
             ? BorderRadius.circular(5.0)
             : BorderRadius.circular(50.0),
@@ -36,11 +38,14 @@ class LetterButtonState extends State<LetterButton> {
           AnimatedContainer(
             height: widget.visited ? 100.0 : 0.0,
             decoration: BoxDecoration(
-                borderRadius: widget.current
-                    ? BorderRadius.circular(5.0)
-                    : BorderRadius.circular(50.0),
-                color: Colours.secondary),
-            duration: Duration(milliseconds: 500),
+              borderRadius: widget.current
+                  ? BorderRadius.circular(5.0)
+                  : BorderRadius.circular(50.0),
+              color: Colours.lightestGrey,
+            ),
+            duration: Duration(
+              milliseconds: 500,
+            ),
             curve: Curves.fastOutSlowIn,
           ),
           GestureDetector(
@@ -53,10 +58,9 @@ class LetterButtonState extends State<LetterButton> {
                 widget.letter,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    color: widget.visited
-                        ? Colours.backgroundHighlight
-                        : Colours.secondary,
-                    fontSize: 35.0),
+                  color: widget.visited ? Colours.darkGrey : Colours.lightestGrey,
+                  fontSize: 35.0,
+                ),
               ),
             ),
           ),
