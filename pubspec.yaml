@@ -17,3 +17,10 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: AvenirNext
+      fonts:
+        - asset: fonts/Avenir-Next-Regular.ttf
+    - family: Graphik
+      fonts:
+        - asset: fonts/Graphik-Bold.ttf
