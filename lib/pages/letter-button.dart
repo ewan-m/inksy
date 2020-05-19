@@ -26,9 +26,13 @@ class LetterButtonState extends State<LetterButton> {
         vertical: widget.current ? 0.0 : 15.0,
       ),
       decoration: BoxDecoration(
-        color: Colours.darkGrey,
+        color: Colours.primary,
+        border: Border.all(
+          color: Colours.black,
+          width: 1,
+        ),
         borderRadius: widget.current
-            ? BorderRadius.circular(5.0)
+            ? BorderRadius.circular(0.0)
             : BorderRadius.circular(50.0),
       ),
       duration: Duration(milliseconds: 300),
@@ -39,9 +43,9 @@ class LetterButtonState extends State<LetterButton> {
             height: widget.visited ? 100.0 : 0.0,
             decoration: BoxDecoration(
               borderRadius: widget.current
-                  ? BorderRadius.circular(5.0)
+                  ? BorderRadius.circular(0.0)
                   : BorderRadius.circular(50.0),
-              color: Colours.lightestGrey,
+              color: Colours.white,
             ),
             duration: Duration(
               milliseconds: 500,
@@ -58,7 +62,7 @@ class LetterButtonState extends State<LetterButton> {
                 widget.letter,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  color: widget.visited ? Colours.darkGrey : Colours.lightestGrey,
+                  color: widget.visited ? Colours.black : Colours.white,
                   fontSize: 35.0,
                 ),
               ),

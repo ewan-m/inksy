@@ -6,11 +6,15 @@ class LetterDrawer extends CustomPainter {
   final List<Offset> points;
   final String currentLetter;
   final Map<String, List<Offset>> limits;
+  final double thickness;
+  final bool showGuideLines;
 
   LetterDrawer({
     this.points,
     this.limits,
     this.currentLetter,
+    this.thickness,
+    this.showGuideLines,
   });
 
   @override
@@ -22,14 +26,14 @@ class LetterDrawer extends CustomPainter {
     Paint letterPath = Paint()
       ..color = Colours.primary
       ..strokeCap = StrokeCap.round
-      ..strokeWidth = 15.0;
+      ..strokeWidth = thickness;
 
     Paint boundaryLine = Paint()
-      ..color = Colours.lightGrey
+      ..color = Colours.secondary
       ..strokeCap = StrokeCap.square
-      ..strokeWidth = 2.5;
+      ..strokeWidth = 1;
 
-    if (limits != null) {
+    if (limits != null && showGuideLines) {
       limits.forEach((key, value) {
         if (value.isNotEmpty && value[0] != null && value[1] != null) {
           Offset bottomLeft = value[0];

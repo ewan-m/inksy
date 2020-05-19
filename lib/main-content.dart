@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:animations/animations.dart';
 import 'package:inksy/components/footer-navigator/footer-navigator.dart';
 import 'package:inksy/pages/create-font.dart';
 import 'package:inksy/pages/home.dart';
@@ -12,53 +13,58 @@ class MainContent extends StatefulWidget {
   }
 }
 
-class _MainContentState extends State {
-  Widget _child;
+class _MainContentState extends State<MainContent> {
+  int pageIndex = 0;
 
-  @override
-  void initState() {
-    _child = Home();
-    super.initState();
-  }
+  List<Widget> pageList = <Widget>[
+    Home(),
+    Search(),
+    CreateFont(),
+  ];
 
   @override
   Widget build(context) {
     return MaterialApp(
+      title: 'inkwall',
+      theme: ThemeData(
+        fontFamily: 'AvenirNext',
+      ),
       home: Scaffold(
         backgroundColor: Colours.white,
         extendBody: true,
-        body: Container(
-          child: SafeArea(
-              left: true, right: true, top: true, bottom: false, child: _child),
-          decoration: BoxDecoration(color: Colours.white),
+        body: SafeArea(
+          child: PageTransitionSwitcher(
+            transitionBuilder: (
+              Widget child,
+              Animation<double> animation,
+              Animation<double> secondaryAnimation,
+            ) {
+              return FadeThroughTransition(
+                animation: animation,
+                secondaryAnimation: secondaryAnimation,
+                child: child,
+              );
+            },
+            child: pageList[pageIndex],
+          ),
         ),
         bottomNavigationBar: FooterNavigator(
           height: 55.0,
-          color: Colours.primary,
-          buttonBackgroundColor: Colours.primary,
+          color: Colours.black,
+          buttonBackgroundColor: Colours.black,
           backgroundColor: Colours.white,
           items: <Widget>[
-            Icon(Icons.home, size: 30, color: Colours.lightestGrey),
-            Icon(Icons.search, size: 30, color: Colours.lightestGrey),
-            Icon(Icons.edit, size: 30, color: Colours.lightestGrey),
+            Icon(Icons.home, size: 30, color: Colours.white),
+            Icon(Icons.search, size: 30, color: Colours.white),
+            Icon(Icons.edit, size: 30, color: Colours.white),
           ],
           onTap: (index) {
-            _handleNavigationChange(index);
+            setState(() {
+              pageIndex = index;
+            });
           },
         ),
       ),
     );
-  }
-
-  void _handleNavigationChange(int index) {
-    setState(() {
-      _child = [Home(), Search(), CreateFont()][index];
-      _child = AnimatedSwitcher(
-        switchInCurve: Curves.easeOut,
-        switchOutCurve: Curves.easeIn,
-        duration: Duration(milliseconds: 500),
-        child: _child,
-      );
-    });
   }
 }

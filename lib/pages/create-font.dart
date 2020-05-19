@@ -23,12 +23,14 @@ class CreateFontState extends State<CreateFont> with TickerProviderStateMixin {
   );
   Set<String> visitedLetters = Set.of([Alphabet.letters.first]);
   String currentLetter = Alphabet.letters.first;
+  double thickness = 20.0;
+  bool showGuides = true;
 
   bool isWithinBox(Offset drawPoint) {
     return drawPoint.dx > 0 &&
         drawPoint.dy > 0 &&
         drawPoint.dx < MediaQuery.of(context).size.width - 40.0 &&
-        drawPoint.dy < MediaQuery.of(context).size.width * 1.1;
+        drawPoint.dy < MediaQuery.of(context).size.width * 1.0;
   }
 
   void updateMinMaxYValues(Offset newPoint) {
@@ -58,60 +60,123 @@ class CreateFontState extends State<CreateFont> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
+      color: Colours.white,
       child: Column(
         children: [
-          PageTitle("Create Font"),
+          PageTitle(
+            "Create your font",
+            "Draw each letter to create your own handwritten font",
+          ),
           Container(
             margin: EdgeInsets.all(20.0),
-            child: GestureDetector(
-              onPanUpdate: (DragUpdateDetails details) {
-                if (isWithinBox(details.localPosition)) {
-                  setState(() {
-                    updateMinMaxYValues(details.localPosition);
-                    letters.update(
-                      currentLetter,
-                      (points) => List.from(points)..add(details.localPosition),
-                    );
-                  });
-                }
-              },
-              onPanStart: (DragStartDetails details) {
-                if (isWithinBox(details.localPosition)) {
-                  setState(() {
-                    updateMinMaxYValues(details.localPosition);
-                    letters.update(
-                      currentLetter,
-                      (points) => List.from(points)..add(details.localPosition),
-                    );
-                  });
-                }
-              },
-              onPanEnd: (DragEndDetails details) {
-                setState(() {
-                  visitedLetters.add(currentLetter);
-                  letters.update(
-                    currentLetter,
-                    (points) => List.from(points)..add(null),
-                  );
-                });
-              },
-              child: Container(
-                alignment: Alignment.topLeft,
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.width * 1.05,
-                decoration: BoxDecoration(
-                  color: Colours.lightestGrey,
+            decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colours.black,
+                  width: 1,
                 ),
-                child: CustomPaint(
-                  painter: LetterDrawer(
-                    limits: limits,
-                    points: letters[currentLetter],
-                    currentLetter: currentLetter,
+                borderRadius: BorderRadius.circular(10.0)),
+            child: Column(
+              children: [
+                Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: Slider(
+                            min: 15.0,
+                            max: 45.0,
+                            value: thickness,
+                            onChanged: (double newValue) {
+                              setState(() {
+                                thickness = newValue;
+                              });
+                            },
+                            activeColor: Colours.secondary,
+                            inactiveColor: Colours.black,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              showGuides = !showGuides;
+                            });
+                          },
+                          icon: Icon(
+                            showGuides
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: Colours.black,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              letters.update(currentLetter, (points) => []);
+                              limits[currentLetter] = [];
+                            });
+                          },
+                          icon: Icon(Icons.undo, color: Colours.black),
+                        ),
+                      ],
+                    )),
+                GestureDetector(
+                  onPanUpdate: (DragUpdateDetails details) {
+                    if (isWithinBox(details.localPosition)) {
+                      setState(() {
+                        updateMinMaxYValues(details.localPosition);
+                        letters.update(
+                          currentLetter,
+                          (points) =>
+                              List.from(points)..add(details.localPosition),
+                        );
+                      });
+                    }
+                  },
+                  onPanStart: (DragStartDetails details) {
+                    if (isWithinBox(details.localPosition)) {
+                      setState(() {
+                        updateMinMaxYValues(details.localPosition);
+                        letters.update(
+                          currentLetter,
+                          (points) =>
+                              List.from(points)..add(details.localPosition),
+                        );
+                      });
+                    }
+                  },
+                  onPanEnd: (DragEndDetails details) {
+                    setState(() {
+                      visitedLetters.add(currentLetter);
+                      letters.update(
+                        currentLetter,
+                        (points) => List.from(points)..add(null),
+                      );
+                    });
+                  },
+                  child: Container(
+                    alignment: Alignment.topLeft,
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.width * 1.0,
+                    decoration: BoxDecoration(
+                      border: Border(
+                        top: BorderSide(
+                          color: Colours.black,
+                          width: 1,
+                        ),
+                      ),
+                    ),
+                    child: CustomPaint(
+                      painter: LetterDrawer(
+                        limits: limits,
+                        points: letters[currentLetter],
+                        currentLetter: currentLetter,
+                        thickness: thickness,
+                        showGuideLines: showGuides,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
           ),
           SingleChildScrollView(

@@ -9,18 +9,19 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^0.1.2
+  animations: 1.0.0+5
 
 dev_dependencies:
   pedantic: ^1.8.0
-  flutter_test:
-    sdk: flutter
 
 flutter:
   uses-material-design: true
+  assets: 
+    - assets/fonts/Avenir-Next-Regular.svg
   fonts:
     - family: AvenirNext
       fonts:
-        - asset: fonts/Avenir-Next-Regular.ttf
+        - asset: assets/fonts/Avenir-Next-Regular.ttf
     - family: Graphik
       fonts:
-        - asset: fonts/Graphik-Bold.ttf
+        - asset: assets/fonts/Graphik-Bold.ttf
